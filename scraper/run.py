@@ -36,6 +36,7 @@ def parse_data(data):
         if not (int(child.get('data').get('created_utc')) + 3600) >= current_time:
             has_item = check_title(child.get('data').get('title'))
             if has_item:
+                print(child)
                 message_body += "\n\n%s > www.reddit.com%s" % (
                     child.get('data').get('title'), child.get('data').get('permalink'))
     return message_body
