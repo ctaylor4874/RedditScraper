@@ -32,11 +32,11 @@ def check_title(title):
 def parse_data(data):
     message_body = ""
     for child in data.get('data').get('children'):
-        if int(child.get('data').get('created_utc')) > (time.time() - 3600):
+        if int(child.get('data').get('created_utc')) > (time.time() - 900):
             has_item = check_title(child.get('data').get('title'))
             if has_item:
-                message_body += "\n\n%s > www.reddit.com%s" % (
-                    child.get('data').get('title'), child.get('data').get('permalink'))
+                message_body += "\n\n===\n\nTitle: %s > \n\nReddit Link: www.reddit.com%s \n\nLink: %s" % (
+                    child.get('data').get('title'), child.get('data').get('permalink'), child.get('data').get('url'))
     return message_body
 
 
@@ -79,7 +79,7 @@ if __name__ == '__main__':
     parser.add_argument('keyword', help='Enter the keywords (animals, people, etc...)')
     parser.add_argument('additional_keywords', help='Enter the additional keywords example=(animals people)', nargs='+')
     args = parser.parse_args()
-    logging.basicConfig(level=10, format='%(asctime)s:{}'.format(logging.BASIC_FORMAT))
+    logging.basicConfig(level=20, format='%(asctime)s:{}'.format(logging.BASIC_FORMAT))
     try:
         run()
     except Exception as e:
