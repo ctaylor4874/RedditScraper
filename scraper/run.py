@@ -79,7 +79,7 @@ if __name__ == '__main__':
     parser.add_argument('keyword', help='Enter the keywords (animals, people, etc...)')
     parser.add_argument('additional_keywords', help='Enter the additional keywords example=(animals people)', nargs='+')
     args = parser.parse_args()
-    logging.basicConfig(level=20, format='%(asctime)s:{}'.format(logging.BASIC_FORMAT))
+    logging.basicConfig(level=10, format='%(asctime)s:{}'.format(logging.BASIC_FORMAT))
     try:
         run()
     except Exception as e:
