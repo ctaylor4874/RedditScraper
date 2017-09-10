@@ -2,6 +2,7 @@
 Scraper for reddit.
 """
 import os
+import time
 import argparse
 import logging
 import contextlib
@@ -29,12 +30,14 @@ def check_title(title):
 
 
 def parse_data(data):
+    current_time = time.time()
     message_body = ""
     for child in data.get('data').get('children'):
-        has_item = check_title(child.get('data').get('title'))
-        if has_item:
-            message_body += "\n\n%s > www.reddit.com%s" % (
-                child.get('data').get('title'), child.get('data').get('permalink'))
+        if not (int(child.get('data').get('created_utc')) + 3600) >= current_time:
+            has_item = check_title(child.get('data').get('title'))
+            if has_item:
+                message_body += "\n\n%s > www.reddit.com%s" % (
+                    child.get('data').get('title'), child.get('data').get('permalink'))
     return message_body
 
 
