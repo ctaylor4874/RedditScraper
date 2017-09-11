@@ -33,7 +33,7 @@ def parse_data(data):
     current_time = time.time()
     message_body = ""
     for child in data.get('data').get('children'):
-        if int(child.get('data').get('created_utc')) > (current_time - 900):
+        if int(child.get('data').get('created_utc')) > (current_time - 1800):
             has_item = check_title(child.get('data').get('title'))
             if has_item:
                 message_body += "\n\n===\n\nTitle: %s > \n\nReddit Link: www.reddit.com%s \n\nLink: %s" % (
@@ -67,6 +67,7 @@ def send_email(body):
 
 def run():
     data = get_data()
+    print(data)
     if not data.get('error'):
         parsed = parse_data(data)
         if len(parsed):
