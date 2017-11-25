@@ -41,18 +41,16 @@ def parse_data(data):
     return message_body
 
 
-def send_email(body):
+def send(user, to, pwd, body):
     import smtplib
 
-    user = os.getenv("EMAIL_ADDRESS")
-    pwd = os.getenv("EMAIL_PASSWORD")
     FROM = user
-    TO = user
+    TO = to
     SUBJECT = "Reddit Posts from %s, %s" % (args.subreddit, args.type_of_post)
     TEXT = body
 
     message = """From: %s\nTo: %s\nSubject: %s\n\n%s
-    """ % (FROM, TO, SUBJECT, TEXT)
+        """ % (FROM, TO, SUBJECT, TEXT)
     try:
         server = smtplib.SMTP("smtp.gmail.com", 587)
         server.ehlo()
@@ -63,6 +61,14 @@ def send_email(body):
         logging.info('successfully sent the mail')
     except:
         logging.error("failed to send mail")
+
+
+def send_email(body):
+    user = os.getenv("EMAIL_ADDRESS")
+    second_user = os.getenv("SECOND_EMAIL")
+    pwd = os.getenv("EMAIL_PASSWORD")
+    send(user, user, pwd, body)
+    send(user, second_user, pwd, body)
 
 
 def run():
