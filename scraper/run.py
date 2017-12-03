@@ -65,7 +65,8 @@ def send(user, to, pwd, body):
 
 def send_email(body):
     user = os.getenv("EMAIL_ADDRESS")
-    second_user = os.getenv("SECOND_EMAIL")
+    second_user = False
+    # second_user = os.getenv("SECOND_EMAIL")
     pwd = os.getenv("EMAIL_PASSWORD")
     send(user, user, pwd, body)
     if second_user:
@@ -77,6 +78,9 @@ def run():
     print(data)
     if not data.get('error'):
         parsed = parse_data(data)
+        if len(parsed):
+            send_email(parsed)
+    else:
         parsed = 'testing'
         if len(parsed):
             send_email(parsed)
