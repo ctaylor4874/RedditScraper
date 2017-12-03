@@ -11,11 +11,12 @@ import requests
 
 
 def get_data():
-    return requests.get("http://www.reddit.com/r/%s/%s.json?limit=100" % (args.subreddit, args.type_of_post)).json()
+    return requests.get("http://www.reddit.com/r/{}/{}.json?limit=100".format(args.subreddit, args.type_of_post)).json()
 
 
 def read_data():
-    with contextlib.closing(open("%s/data/response.txt" % os.path.dirname(os.path.realpath(__file__)), "r")) as stream:
+    with contextlib.closing(
+            open("{}/data/response.txt".format(os.path.dirname(os.path.realpath(__file__))), "r")) as stream:
         read_in = stream.read()
         return json.loads(read_in)
 
@@ -36,7 +37,7 @@ def parse_data(data):
         if int(child.get('data').get('created_utc')) > (current_time - 1800):
             has_item = check_title(child.get('data').get('title'))
             if has_item:
-                message_body += "\n\n===\n\nTitle: %s > \n\nReddit Link: www.reddit.com%s \n\nLink: %s" % (
+                message_body += "\n\n===\n\nTitle: {} > \n\nReddit Link: www.reddit.com{} \n\nLink: {}".format(
                     child.get('data').get('title'), child.get('data').get('permalink'), child.get('data').get('url'))
     return message_body
 
@@ -44,29 +45,28 @@ def parse_data(data):
 def send(user, to, pwd, body):
     import smtplib
 
-    FROM = user
-    TO = to
-    SUBJECT = "Reddit Posts from %s, %s" % (args.subreddit, args.type_of_post)
-    TEXT = body
+    from_user = user
+    to_user = to
+    subject = "Reddit Posts from {}, {}".format(args.subreddit, args.type_of_post)
+    email_text = body
 
-    message = """From: %s\nTo: %s\nSubject: %s\n\n%s
-        """ % (FROM, TO, SUBJECT, TEXT)
+    message = """From: {}\nTo: {}\nSubject: {}\n\n{}
+        """.format(from_user, to_user, subject, email_text)
     try:
         server = smtplib.SMTP("smtp.gmail.com", 587)
         server.ehlo()
         server.starttls()
         server.login(user, pwd)
-        server.sendmail(FROM, TO, message)
+        server.sendmail(from_user, to_user, message)
         server.close()
         logging.info('successfully sent the mail')
-    except:
-        logging.error("failed to send mail")
+    except Exception as exc:
+        logging.error(exc)
 
 
 def send_email(body):
     user = os.getenv("EMAIL_ADDRESS")
-    second_user = False
-    # second_user = os.getenv("SECOND_EMAIL")
+    second_user = os.getenv("SECOND_EMAIL")
     pwd = os.getenv("EMAIL_PASSWORD")
     send(user, user, pwd, body)
     if second_user:
@@ -75,13 +75,8 @@ def send_email(body):
 
 def run():
     data = get_data()
-    print(data)
     if not data.get('error'):
         parsed = parse_data(data)
-        if len(parsed):
-            send_email(parsed)
-    else:
-        parsed = 'testing'
         if len(parsed):
             send_email(parsed)
 
