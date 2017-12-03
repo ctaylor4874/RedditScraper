@@ -77,6 +77,7 @@ def run():
     print(data)
     if not data.get('error'):
         parsed = parse_data(data)
+        parsed = 'testing'
         if len(parsed):
             send_email(parsed)
 
