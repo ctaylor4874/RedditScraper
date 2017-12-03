@@ -68,7 +68,8 @@ def send_email(body):
     second_user = os.getenv("SECOND_EMAIL")
     pwd = os.getenv("EMAIL_PASSWORD")
     send(user, user, pwd, body)
-    send(user, second_user, pwd, body)
+    if second_user:
+        send(user, second_user, pwd, body)
 
 
 def run():
